@@ -22,7 +22,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 //create a props interface for exercises that will be passed in from ExerciseSummary.tsx
 export interface SummaryCardProps {
   exercise: {
-    user_exercise_id: string;
+    user_exercise_id: number;
     name: string;
     variant: string | null;
     muscle: string | null;
@@ -118,14 +118,14 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
   }, [exercise.user_exercise_id, useDeleteSet, workout_id]);
 
   const dbRemove = React.useCallback(() => {
-    useRemoveEx.mutate({ exercise_id: exercise.user_exercise_id })
+    useRemoveEx.mutate({ user_exercise_id: exercise.user_exercise_id })
   }, [exercise.user_exercise_id, useRemoveEx]);
   const onDeleteExercise = React.useCallback(() => {
     if (!selfRef.current) return;
     // selfRef.current.scrollLeft = 0;
     selfRef.current.classList.add("-translate-x-[100vw]");
     selfRef.current.ontransitionend = () => {
-      useRemoveEx.mutate({ exercise_id: exercise.user_exercise_id });
+      useRemoveEx.mutate({ user_exercise_id: exercise.user_exercise_id });
       // dbRemove();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -201,20 +201,23 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
               </Box>
             </div>
           </section>
-          <Collapse id="exercise-set-details" style={{ height: 'max' }} in={expanded}>
-            <Divider sx={{ backgroundColor: "text.secondary" }} />
+          <Collapse id="exercise-set-details" style={{ height: 'max' }} className="text-white" in={expanded}>
+            <div className="h-[1px] bg-text.secondary" />
             <TableContainer
               sx={{
                 minHeight: "fit-content",
                 py: ".25rem",
                 px: ".5rem",
                 "& .MuiTableCell-root": {
+                  color: "inherit",
                   border: "0",
                   py: "0.1rem",
                 },
                 "& .MuiTableBody-root": {
                   "& .MuiTableCell-root": {
                     // border: { borders } && "1px solid pink",
+                    color: "inherit",
+                    borderColor: "white",
                     fontWeight: 100,
                     fontSize: "1rem",
                   },
@@ -283,7 +286,8 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
                             variant="outlined"
                             label="Weight"
                             type="number"
-                            color="info"
+                            // className="text-white border-white"
+                            color="primary"
                             onChange={(e) =>
                               (set.current.weight = parseInt(e.target.value))
                             }
@@ -296,12 +300,22 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
                             }}
                             sx={{ ...inputBox }}
                           />
+                          <div className="w-min mx-auto relative pt-1">
+                            <fieldset id='TextField' htmlfor="weight-input" className="border-2 rounded-[.25rem] w-max peer">
+                              <label htmlFor="weight-input"
+                                className="px-1 text-[.75rem] tracking-[.01rem] leading-none font-[300] text-secondary bg-white text-black absolute top-0 left-2">
+                                Weight
+                              </label>
+                              <input name="weight-input" type="number" className="font-[400] w-[6ch] bg-gray-500 mt-1.5 mr-[1ch] leading-tight focus:outline-0 ml-[7px]" />
+                            </fieldset>
+                          </div>
                         </TableCell>
                         <TableCell align="center">
                           <TextField
                             variant="outlined"
                             label="Reps"
                             type="number"
+                            // className="text-white border-white"
                             color="info"
                             onChange={(e) =>
                               (set.current.reps = parseInt(e.target.value))
@@ -321,7 +335,7 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
                             variant="outlined"
                             label="RPE"
                             type="number"
-
+                            // className="text-white border-white"
                             color="info"
                             onChange={(e) =>
                               (set.current.rpe = parseInt(e.target.value))
@@ -377,6 +391,7 @@ export const UserExerciseCard: React.FC<SummaryCardProps> = ({ exercise, isFocus
 const inputBox: SxProps = {
   borderRadius: 1,
   // border: "1px solid white",
+  borderColor: "white",
   fontSize: "1.2rem",
   width: "7ch",
   fontWeight: "semi-bold",
@@ -395,6 +410,7 @@ const inputBox: SxProps = {
     py: "0.2rem",
     "& .MuiInputLabel-root": {
       margin: 0,
+      color: "#fff"
     },
   },
 };
