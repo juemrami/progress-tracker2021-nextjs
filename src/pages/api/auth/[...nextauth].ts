@@ -58,7 +58,8 @@ export const nextAuthOptions: NextAuthOptions = {
     },
     session: {
         strategy: "database",
-        maxAge: 60 * 60 * 2, // 2 hours
+        maxAge: 60 * 60 * 1.5, // session duration: 1.5 hours
+        updateAge: 60 * 5, // refresh session every: 5 minutes
     },
     theme: {
         logo: "https://i.imgur.com/OX5mAdU.png",
