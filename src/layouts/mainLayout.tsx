@@ -66,7 +66,7 @@ export const MainLayout = ({ session, children, appLocation }: LayoutProps) => {
                 e.stopPropagation();
             }}
             className="flex
-                    h-screen
+                    h-[100dvh]
                     flex-col
                     overflow-hidden
                     /border-4
