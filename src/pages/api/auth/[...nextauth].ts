@@ -13,14 +13,29 @@ export const nextAuthOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
-        signIn(params) {
+        async signIn(params) {
             console.log("[NextAuth] signIn callback invoked w/ params: ", params)
+            // For existing users, update their profile picture if it exist
+            const userExists = (await prisma.user.findUnique({ where: { id: params.user.id } }))
+            if (params.account.provider === "discord" 
+            && (params.profile.image_url) 
+            && (!!userExists)) 
+            {
+                await prisma.user.update({
+                    where: {
+                        id: params.user.id
+                    },
+                    data: {
+                        image: params.profile.image_url as string
+                    }
+                })
+            }
             return true
         },
         async session({ session, user, token}) {
             console.log("[NextAuth] Invoking /api/session")
             // Token only used with jwt strategy, not the session cookie strategy
-            console.log("[NextAuth] next-auth session token :", token)
+            console.log("[NextAuth] next-auth session data :", session)
             session.user = {
                 id: user.id,
                 name: user.name || null,
@@ -40,8 +55,8 @@ export const nextAuthOptions: NextAuthOptions = {
             console.log(user, account)
         },
         signIn: async ({ user, isNewUser, account }) => {
-            console.log("[NextAuth] User has been 'Signed-In': ", user.name)
-            console.log("[NextAuth] Provider Account: ", account)
+            console.log("[NextAuth] User has been 'Signed-In': ", user)
+            console.log("[NextAuth] User sign-in provider Account: ", account)
             console.log("[NextAuth] Cleaning up expired sessions for User")
             await prisma.session.deleteMany({
                 where: {
